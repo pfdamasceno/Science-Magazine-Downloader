@@ -33,7 +33,7 @@ def pdfcat(fileList, magPath, magTitle):
     #finally, delete the single pdfs
     for f in fileList:
         os.remove(magPath + "/" + f)
-        
+
 
 
 # validate arguments and start downloading
@@ -47,7 +47,7 @@ def main(argv):
     volume = ""
     issue = ""
     merge = True
-    
+
     try:
         for opt, arg in opts:
             if opt in ("-h", "--help"):
@@ -65,8 +65,8 @@ def main(argv):
     if volume=="" or issue=="":
         usage()
         sys.exit()
-    
-    
+
+
     link = "http://www.sciencemag.org/content/"+str(volume)+"/"+str(issue)
     chapters = list()
     loader = MyURLopener();
@@ -92,7 +92,7 @@ def main(argv):
         magTitle = magTitle.replace(';', '')
         magTitle = magTitle.replace('(', '')
         magTitle = magTitle.replace(')', '')
-        
+
         magTitle = magTitle.replace('January', 'Jan')
         magTitle = magTitle.replace('February', 'Feb')
         magTitle = magTitle.replace('March', 'Mar')
@@ -105,7 +105,7 @@ def main(argv):
         magTitle = magTitle.replace('October', 'Oct')
         magTitle = magTitle.replace('November', 'Nov')
         magTitle = magTitle.replace('December', 'Dec')
-        
+
 
     # get chapters
     for match in re.finditer(r"/.*\.full\.pdf", page):
@@ -115,15 +115,15 @@ def main(argv):
     print "found %d articles" % len(chapters)
 
     # setup; set tempDir as working directory
-    tempDir = tempfile.mkdtemp()
-    os.chdir(tempDir)
+    #tempDir = tempfile.mkdtemp()
+    #os.chdir(tempDir)
 
     i = 1
     fileList = list()
 
     for chapterLink in chapters:
         print "downloading article %d/%d" % (i, len(chapters))
-        
+
         localFile, mimeType = geturl(chapterLink, "%d.pdf" % i)
         if mimeType.gettype() != "application/pdf":
             os.chdir(curDir)
@@ -132,20 +132,20 @@ def main(argv):
         fileList.append(localFile)
         i += 1
 
-        
-    for f in fileList:
-        shutil.move(f, curDir)
-    os.chdir(curDir)
-    
+
+    #for f in fileList:
+    #    shutil.move(f, curDir)
+    #os.chdir(curDir)
+
     if merge:
         print "merging articles"
         if len(fileList) == 1:
             os.rename(fileList[0], magTitle)
         else:
-            pdfcat(fileList, curDir, magTitle)
+            pdfcat(fileList, curDir, "newMag")
 
     # cleanup
-    shutil.rmtree(tempDir)
+    #shutil.rmtree(tempDir)
 
     print "%s was successfully downloaded, it was saved to %s" % (magTitle, curDir)
     sys.exit()
