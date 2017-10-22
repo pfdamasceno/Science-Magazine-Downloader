@@ -1,3 +1,4 @@
 1. remove the 1st (front) page of articles
 2. add cover
-
+3. add option to download 'latest'
+  1. http://science.sciencemag.org/content/current
