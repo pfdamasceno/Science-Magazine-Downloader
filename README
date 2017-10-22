@@ -6,6 +6,7 @@ Options:
   -h, --help              Display this usage message
   -v, --volume            defines the volume of the science magazine you intend to download
   -i, --issue             defines the issue of the science magazine you intend to download
+  -l, --latest            downloads the latest magazine available
   -n, --no-merge          Only download the articles but don't merge them into a single PDF.
 
 An Example: to download all the articles in "http://www.sciencemag.org/content/334/6062" and merge them into a single pdf file, one may execute:

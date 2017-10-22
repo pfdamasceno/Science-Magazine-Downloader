@@ -11,8 +11,6 @@ import tempfile
 import shutil
 from pyPdf import PdfFileWriter, PdfFileReader
 
-
-
 # Set some kind of User-Agent
 class MyURLopener(urllib.FancyURLopener):
     version = "Mozilla 5.0"
@@ -22,7 +20,7 @@ def pdfcat(fileList, magPath, magTitle):
     for f in fileList:
         myinput = PdfFileReader(file(magPath + "/" + f, "rb"))
         # add pages from myinput to output document, unchanged
-        for i in range(myinput.getNumPages()):
+        for i in range(myinput.getNumPages() - 1):
             myoutput.addPage(myinput.getPage(i))
 
     #write "output" to document-output.pdf
@@ -34,13 +32,11 @@ def pdfcat(fileList, magPath, magTitle):
     for f in fileList:
         os.remove(magPath + "/" + f)
 
-
-
 # validate arguments and start downloading
 def main(argv):
 
     try:
-        opts, args = getopt.getopt(argv, "hv:i:n", ["help", "volume=", "issue=", "no-merge"])
+        opts, args = getopt.getopt(argv, "h:v:i:n:l", ["help", "volume=", "issue=", "no-merge", "latest"])
     except getopt.GetoptError:
         error("Could not parse command line arguments.")
 
@@ -59,15 +55,20 @@ def main(argv):
                 issue = int(arg)
             elif opt in ("-n", "--no-merge"):
                 merge = False
+            elif opt in ("-l", "--latest"):
+                latest = True
     except ValueError:
         error("-v and -i accept integers only")
 
-    if volume=="" or issue=="":
-        usage()
-        sys.exit()
+    if latest=="":
+        if volume=="" or issue=="":
+            usage()
+            sys.exit()
 
-
-    link = "http://www.sciencemag.org/content/"+str(volume)+"/"+str(issue)
+    if latest == True:
+        link = "http://science.sciencemag.org/content/current"
+    else:
+        link = "http://www.sciencemag.org/content/"+str(volume)+"/"+str(issue)
     chapters = list()
     loader = MyURLopener();
     curDir = os.getcwd()
